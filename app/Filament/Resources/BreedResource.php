@@ -25,12 +25,18 @@ class BreedResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('animal_id')
-                    ->relationship('animal', 'name')
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required(),
-            ]);
+                Forms\Components\Section::make([
+                    Forms\Components\Select::make('animal_id')
+                        ->relationship('animal', 'name')
+                        ->required()
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('name')
+                                ->required(),
+                        ])->columns(1),
+                    Forms\Components\TextInput::make('name')
+                        ->required(),
+                ])->columns(1)
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
@@ -72,14 +78,14 @@ class BreedResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -88,8 +94,8 @@ class BreedResource extends Resource
             'view' => Pages\ViewBreed::route('/{record}'),
             'edit' => Pages\EditBreed::route('/{record}/edit'),
         ];
-    }    
-    
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
