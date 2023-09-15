@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Services;
 use App\Filament\Resources\Services\ProductResource\Pages;
 use App\Filament\Resources\Services\ProductResource\RelationManagers;
 use App\Models\Services\Product;
-use Filament\Forms;
+use Filament\Forms\Components;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -18,7 +18,9 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-scissors';
+
+    protected static ?string $modelLabel = 'produto';
 
     protected static ?string $navigationGroup = 'Serviços';
 
@@ -26,14 +28,14 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()
+                Components\Section::make()
                     ->schema([
-                        Forms\Components\TextInput::make('name')
+                        Components\TextInput::make('name')
                             ->label('Nome')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
-                        Forms\Components\Textarea::make('description')
+                        Components\Textarea::make('description')
                             ->label('Descrição')
                             ->nullable(),
                         Money::make('price')
@@ -52,6 +54,10 @@ class ProductResource extends Resource
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->label('Descrição')
+                    ->limit(50)
+                    ->searchable(),
                 \App\Tables\Columns\MoneyColumn::make('price')
                     ->label('Preço')
                     ->searchable()

@@ -17,7 +17,9 @@ class BreedResource extends Resource
 {
     protected static ?string $model = Breed::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-list-bullet';
+
+    protected static ?string $modelLabel = 'raça';
 
     protected static ?string $navigationGroup = 'Animais';
 

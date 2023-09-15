@@ -17,7 +17,11 @@ class AnimalResource extends Resource
 {
     protected static ?string $model = Animal::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-bug-ant';
+
+    protected static ?string $modelLabel = 'animal';
+
+    protected static ?string $pluralModelLabel = 'animais';
 
     protected static ?string $navigationGroup = 'Animais';
 
