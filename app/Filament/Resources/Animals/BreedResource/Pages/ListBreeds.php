@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\BreedResource\Pages;
+namespace App\Filament\Resources\Animals\BreedResource\Pages;
 
-use App\Filament\Resources\BreedResource;
+use App\Filament\Resources\Animals\BreedResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 

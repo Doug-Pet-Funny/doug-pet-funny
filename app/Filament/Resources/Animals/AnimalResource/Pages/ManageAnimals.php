@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\AnimalResource\Pages;
+namespace App\Filament\Resources\Animals\AnimalResource\Pages;
 
-use App\Filament\Resources\AnimalResource;
+use App\Filament\Resources\Animals\AnimalResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ManageRecords;
 
