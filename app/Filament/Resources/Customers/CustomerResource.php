@@ -30,26 +30,40 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->nullable()
-                    ->unique(ignoreRecord: true)
-                    ->email()
-                    ->maxLength(255),
-                PhoneNumber::make('phone')
-                    ->tel()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('birth_date'),
-                Document::make('document')
-                    ->cpf()
-                    ->unique(ignoreRecord: true),
-                Forms\Components\Section::make()
+                Forms\Components\Section::make('Informações do usuário')
+                    ->icon('heroicon-o-user-circle')
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Nome')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan(2),
+                        Forms\Components\TextInput::make('email')
+                            ->label('Email')
+                            ->nullable()
+                            ->unique(ignoreRecord: true)
+                            ->email()
+                            ->maxLength(255),
+                        PhoneNumber::make('phone')
+                            ->label('Telefone')
+                            ->required()
+                            ->maxLength(255),
+                        Document::make('document')
+                            ->label('CPF')
+                            ->cpf()
+                            ->unique(ignoreRecord: true),
+                        Forms\Components\DatePicker::make('birth_date')
+                            ->label('Data de Nascimento'),
+                    ])->columns(3),
+
+                Forms\Components\Section::make('Endereços')
+                    ->icon('heroicon-o-map-pin')
+                    ->collapsible()
                     ->schema([
                         Forms\Components\Repeater::make('addresses')
-                            ->label('Endereços')
+                            ->hiddenLabel()
+                            ->addActionLabel('Novo endereço')
+                            ->required()
                             ->relationship('addresses')
                             ->schema([
                                 Cep::make('postal_code')
@@ -98,7 +112,24 @@ class CustomerResource extends Resource
                                     ->required()
                                     ->maxLength(2),
                             ])->columns(2)
-                    ])
+                    ]),
+
+                Forms\Components\Section::make('Informações adicionais')
+                    ->collapsible()
+                    ->collapsed()
+                    ->icon('heroicon-o-information-circle')
+                    ->schema([
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Criado em')
+                            ->content(fn ($record): string => $record?->created_at ? $record->created_at->format('d/m/Y H:i:s') : '-'),
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Atualizado em')
+                            ->content(fn ($record): string => $record?->updated_at ? $record->updated_at->format('d/m/Y H:i:s') : '-'),
+                        Forms\Components\Placeholder::make('deleted_at')
+                            ->label('Excluído em')
+                            ->content(fn ($record): string => $record?->deleted_at ? $record->deleted_at->format('d/m/Y H:i:s') : '-')
+                    ])->columns(3)
+                    ->hidden(fn (?Customer $record) => $record === null),
             ]);
     }
 
