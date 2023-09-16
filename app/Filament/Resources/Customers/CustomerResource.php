@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Leandrocfe\FilamentPtbrFormFields\Cep;
+use Leandrocfe\FilamentPtbrFormFields\Document;
+use Leandrocfe\FilamentPtbrFormFields\PhoneNumber;
 
 class CustomerResource extends Resource
 {
@@ -31,16 +34,71 @@ class CustomerResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('email')
+                    ->nullable()
+                    ->unique(ignoreRecord: true)
                     ->email()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
+                PhoneNumber::make('phone')
                     ->tel()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('birth_date')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('document')
-                    ->maxLength(255),
+                Forms\Components\DatePicker::make('birth_date'),
+                Document::make('document')
+                    ->cpf()
+                    ->unique(ignoreRecord: true),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Repeater::make('addresses')
+                            ->label('Endereços')
+                            ->relationship('addresses')
+                            ->schema([
+                                Cep::make('postal_code')
+                                    ->label('CEP')
+                                    ->required()
+                                    ->viaCep(
+                                        mode: 'suffix', // Determines whether the action should be appended to (suffix) or prepended to (prefix) the cep field, or not included at all (none).
+                                        errorMessage: 'CEP inválido.', // Error message to display if the CEP is invalid.
+
+                                        /**
+                                         * Other form fields that can be filled by ViaCep.
+                                         * The key is the name of the Filament input, and the value is the ViaCep attribute that corresponds to it.
+                                         * More information: https://viacep.com.br/
+                                         */
+                                        setFields: [
+                                            'street'     => 'logradouro',
+                                            'number'     => 'numero',
+                                            'complement' => 'complemento',
+                                            'district'   => 'bairro',
+                                            'city'       => 'localidade',
+                                            'state'      => 'uf'
+                                        ]
+                                    ),
+                                Forms\Components\TextInput::make('street')
+                                    ->label('Endereço')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('number')
+                                    ->label('Número')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('complement')
+                                    ->label('Complemento')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('district')
+                                    ->label('Bairro')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('city')
+                                    ->label('Cidade')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('state')
+                                    ->label('UF')
+                                    ->required()
+                                    ->maxLength(2),
+                            ])->columns(2)
+                    ])
             ]);
     }
 
@@ -88,14 +146,14 @@ class CustomerResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -104,8 +162,8 @@ class CustomerResource extends Resource
             'view' => Pages\ViewCustomer::route('/{record}'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
         ];
-    }    
-    
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
