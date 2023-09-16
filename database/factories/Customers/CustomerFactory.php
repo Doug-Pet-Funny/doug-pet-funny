@@ -21,7 +21,7 @@ class CustomerFactory extends Factory
             'email'      => fake()->email(),
             'phone'      => fake()->phoneNumber(),
             'birth_date' => fake()->date(max: '18 years ago'),
-            'document'   => fake()->randomDigit()
+            'document'   => fake()->cpf(false)
         ];
     }
 }

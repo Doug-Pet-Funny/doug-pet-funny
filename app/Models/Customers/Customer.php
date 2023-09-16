@@ -17,4 +17,9 @@ class Customer extends Model
     {
         return $this->hasMany(Address::class);
     }
+
+    public function pets(): HasMany
+    {
+        return $this->hasMany(Pet::class);
+    }
 }
