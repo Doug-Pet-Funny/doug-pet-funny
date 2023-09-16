@@ -56,6 +56,49 @@ class CustomerResource extends Resource
                             ->label('Data de Nascimento'),
                     ])->columns(3),
 
+                Forms\Components\Section::make('Pets')
+                    ->icon('heroicon-o-heart')
+                    ->collapsible()
+                    ->schema([
+                        Forms\Components\Repeater::make('pets')
+                            ->hiddenLabel()
+                            ->required()
+                            ->relationship('pets')
+                            ->schema([
+                                Forms\Components\Group::make([
+                                    Forms\Components\TextInput::make('name')
+                                        ->label('Nome')
+                                        ->required()
+                                        ->maxLength(255),
+                                    Forms\Components\DatePicker::make('birth_date'),
+                                    Forms\Components\TextInput::make('weight')
+                                        ->numeric()
+                                ])->columns(3),
+
+                                Forms\Components\Group::make([
+                                    Forms\Components\Select::make('animal_id')
+                                        ->label('Espécie')
+                                        ->relationship(name: 'animal', titleAttribute: 'name')
+                                        ->native(false)
+                                        ->required()
+                                        ->createOptionForm([
+                                            Forms\Components\TextInput::make('name')
+                                                ->label('Nome')
+                                                ->required()
+                                                ->maxLength(255)
+                                                ->columnSpanFull()
+                                                ->unique(ignoreRecord: true),
+                                        ]),
+                                    Forms\Components\Select::make('breed_id')
+                                        ->label('Raça')
+                                        ->native(false)
+                                        ->required()
+                                ])->columns(2),
+
+                                Forms\Components\Textarea::make('observations')
+                            ])
+                    ]),
+
                 Forms\Components\Section::make('Endereços')
                     ->icon('heroicon-o-map-pin')
                     ->collapsible()
