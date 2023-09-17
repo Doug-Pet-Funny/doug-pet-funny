@@ -74,8 +74,11 @@ class CustomerResource extends Resource
                                         ->label('Nome')
                                         ->required()
                                         ->maxLength(255),
-                                    Forms\Components\DatePicker::make('birth_date'),
+                                    Forms\Components\DatePicker::make('birth_date')
+                                        ->label('Data de Nascimento'),
                                     Forms\Components\TextInput::make('weight')
+                                        ->label('Peso')
+                                        ->suffix('Kg')
                                         ->numeric()
                                 ])->columns(3),
 
@@ -110,6 +113,7 @@ class CustomerResource extends Resource
                                 ])->columns(2),
 
                                 Forms\Components\Textarea::make('observations')
+                                    ->label('Observações')
                             ])
                     ]),
 
@@ -154,7 +158,6 @@ class CustomerResource extends Resource
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('complement')
                                     ->label('Complemento')
-                                    ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('district')
                                     ->label('Bairro')
