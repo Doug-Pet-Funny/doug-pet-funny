@@ -4,9 +4,13 @@ namespace App\Filament\Resources\Customers;
 
 use App\Filament\Resources\Customers\CustomerResource\Pages;
 use App\Filament\Resources\Customers\CustomerResource\RelationManagers;
+use App\Models\Animals\Animal;
 use App\Models\Customers\Customer;
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -81,6 +85,14 @@ class CustomerResource extends Resource
                                         ->relationship(name: 'animal', titleAttribute: 'name')
                                         ->native(false)
                                         ->required()
+                                        ->live()
+                                        ->afterStateUpdated(
+                                            fn (Component $component) => $component
+                                                ->getContainer()
+                                                ->getComponent('animalBreeds')
+                                                ->getChildComponentContainer()
+                                                ->fill()
+                                        )
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('name')
                                                 ->label('Nome')
@@ -93,6 +105,8 @@ class CustomerResource extends Resource
                                         ->label('Raça')
                                         ->native(false)
                                         ->required()
+                                        ->key('animalBreeds')
+                                        ->options(fn (Get $get) => Animal::find($get('animal_id'))?->breeds->pluck('name', 'id'))
                                 ])->columns(2),
 
                                 Forms\Components\Textarea::make('observations')
