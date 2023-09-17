@@ -59,6 +59,8 @@ class BreedResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\FIlters\SelectFilter::make('animal')
+                    ->relationship('animal', 'name')
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
