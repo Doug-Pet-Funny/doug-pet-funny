@@ -103,10 +103,10 @@ class CustomerResource extends Resource
                                         ]),
                                     Forms\Components\Select::make('breed_id')
                                         ->label('Raça')
+                                        ->nullable()
                                         ->native(false)
-                                        ->required()
                                         ->key('animalBreeds')
-                                        ->options(fn (Get $get) => Animal::find($get('animal_id'))?->breeds->pluck('name', 'id'))
+                                        ->options(fn (Get $get) => Animal::find($get('animal_id'))?->breeds->sortBy('name')->pluck('name', 'id'))
                                 ])->columns(2),
 
                                 Forms\Components\Textarea::make('observations')
