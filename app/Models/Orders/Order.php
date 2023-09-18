@@ -14,12 +14,13 @@ class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['customer_id', 'status', 'payment_method', 'total', 'items'];
+    protected $fillable = ['customer_id', 'status', 'payment_method', 'total', 'items', 'observations'];
 
     protected $casts = [
         'status' => OrderStatusEnum::class,
         'payment_method' => PaymentMethodsEnum::class,
         'items' => 'array',
+        'observations' => 'array',
     ];
 
     public function customer(): BelongsTo

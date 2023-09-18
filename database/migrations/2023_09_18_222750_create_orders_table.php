@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->references('id')->on('customers')->nullOnDelete();
+            $table->foreignId('customer_id')->nullable()->references('id')->on('customers')->nullOnDelete();
             $table->string('status');
             $table->string('payment_method');
             $table->integer('total');
             $table->json('items');
+            $table->json('observations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
