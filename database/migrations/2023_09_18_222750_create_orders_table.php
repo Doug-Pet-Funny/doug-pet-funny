@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('payment_method');
             $table->integer('total');
             $table->json('items');
-            $table->json('observations')->nullable();
+            $table->text('observations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -19,8 +19,7 @@ class Order extends Model
     protected $casts = [
         'status' => OrderStatusEnum::class,
         'payment_method' => PaymentMethodsEnum::class,
-        'items' => 'array',
-        'observations' => 'array',
+        'items' => 'array'
     ];
 
     public function customer(): BelongsTo
