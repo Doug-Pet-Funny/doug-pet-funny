@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->integer('price');
+            $table->boolean('is_service')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,7 +16,8 @@ class ProductSeeder extends Seeder
         Product::create([
             'name'        => 'Banho',
             'description' => 'Tosa',
-            'price'       => 6500
+            'price'       => 6500,
+            'is_service'  => true
         ]);
     }
 }

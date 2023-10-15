@@ -28,21 +28,22 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Components\Section::make()
-                    ->schema([
-                        Components\TextInput::make('name')
-                            ->label('Nome')
-                            ->required()
-                            ->unique(ignoreRecord: true)
-                            ->maxLength(255),
-                        Components\Textarea::make('description')
-                            ->label('Descrição')
-                            ->nullable(),
-                        Money::make('price')
-                            ->label('Preço')
-                            ->required()
-                            ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.']))
-                    ])
+                Components\TextInput::make('name')
+                    ->label('Nome')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255),
+                Money::make('price')
+                    ->label('Preço')
+                    ->required()
+                    ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
+                Components\Textarea::make('description')
+                    ->label('Descrição')
+                    ->nullable()
+                    ->columnSpanFull(),
+                Components\Toggle::make('is_service')
+                    ->label('É um serviço?')
+                    ->inline(false)
             ]);
     }
 
@@ -62,6 +63,9 @@ class ProductResource extends Resource
                     ->label('Preço')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\IconColumn::make('is_service')
+                    ->label('É um serviço?')
+                    ->boolean()
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
