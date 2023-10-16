@@ -6,6 +6,7 @@ use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentMethodsEnum;
 use App\Filament\Resources\Orders\OrderResource\Pages;
 use App\Filament\Resources\Orders\OrderResource\RelationManagers;
+use App\Models\Customers\Customer;
 use App\Models\Orders\Order;
 use App\Models\Services\Product;
 use Filament\Forms;
@@ -36,10 +37,17 @@ class OrderResource extends Resource
                 Forms\Components\Wizard::make([
                     Forms\Components\Wizard\Step::make('Items')
                         ->schema([
+                            Forms\Components\Select::make('customer_id')
+                                ->label('Cliente')
+                                ->searchable()
+                                ->relationship('customer', 'name')
+                                ->required()
+                                ->live(),
                             Forms\Components\Repeater::make('items')
                                 ->required()
                                 ->columns(3)
                                 ->addActionLabel('Adicionar item')
+                                ->hidden(fn (Get $get) => !$get('customer_id'))
                                 ->schema([
                                     Forms\Components\Select::make('item')
                                         ->options(Product::all()->pluck('name', 'id'))
@@ -48,7 +56,7 @@ class OrderResource extends Resource
                                         ->live()
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
-                                            number_format(Product::find($state)->price * $get('quantity') / 100, 2, ',', '.')
+                                            number_format(Product::find($state)?->price * $get('quantity') / 100, 2, ',', '.')
                                         )),
 
                                     Forms\Components\TextInput::make('quantity')
@@ -68,16 +76,17 @@ class OrderResource extends Resource
                                         ->required()
                                         ->readOnly()
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
+
+                                    Forms\Components\Select::make('pet')
+                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'id'))
+                                        ->hidden(fn (Get $get) => !Product::find($get('item'))?->is_service)
+                                        ->native(false)
+                                        ->columnSpanFull()
+                                        ->required()
                                 ]),
                         ]),
                     Forms\Components\Wizard\Step::make('Informações')
                         ->schema([
-                            Forms\Components\Select::make('customer_id')
-                                ->label('Cliente')
-                                ->searchable()
-                                ->relationship('customer', 'name')
-                                ->required(),
-
                             Forms\Components\RichEditor::make('observations')
                                 ->label('Observação'),
                         ]),
