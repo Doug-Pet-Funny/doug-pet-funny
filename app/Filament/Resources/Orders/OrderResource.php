@@ -10,6 +10,7 @@ use App\Models\Customers\Customer;
 use App\Models\Orders\Order;
 use App\Models\Services\Product;
 use Filament\Forms;
+use Filament\Forms\Components;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -34,22 +35,23 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Items')
+                Components\Wizard::make([
+                    Components\Wizard\Step::make('items')
+                        ->label('Items')
                         ->schema([
-                            Forms\Components\Select::make('customer_id')
+                            Components\Select::make('customer_id')
                                 ->label('Cliente')
                                 ->searchable()
                                 ->relationship('customer', 'name')
                                 ->required()
                                 ->live(),
-                            Forms\Components\Repeater::make('items')
+                            Components\Repeater::make('items')
                                 ->required()
                                 ->columns(3)
                                 ->addActionLabel('Adicionar item')
                                 ->hidden(fn (Get $get) => !$get('customer_id'))
                                 ->schema([
-                                    Forms\Components\Select::make('item')
+                                    Components\Select::make('item')
                                         ->options(Product::all()->pluck('name', 'id'))
                                         ->native(false)
                                         ->required()
@@ -59,7 +61,7 @@ class OrderResource extends Resource
                                             number_format(Product::find($state)?->price * $get('quantity') / 100, 2, ',', '.')
                                         )),
 
-                                    Forms\Components\TextInput::make('quantity')
+                                    Components\TextInput::make('quantity')
                                         ->label('Quantidade')
                                         ->required()
                                         ->numeric()
@@ -77,7 +79,7 @@ class OrderResource extends Resource
                                         ->readOnly()
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
 
-                                    Forms\Components\Select::make('pet')
+                                    Components\Select::make('pet')
                                         ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'id'))
                                         ->hidden(fn (Get $get) => !Product::find($get('item'))?->is_service)
                                         ->native(false)
@@ -85,18 +87,24 @@ class OrderResource extends Resource
                                         ->required()
                                 ]),
                         ]),
-                    Forms\Components\Wizard\Step::make('Informações')
+                    Components\Wizard\Step::make('Informações')
                         ->schema([
-                            Forms\Components\RichEditor::make('observations')
+                            Components\RichEditor::make('observations')
                                 ->label('Observação'),
-                        ]),
-                    Forms\Components\Wizard\Step::make('Pagamento')
+                        ])->afterValidation(function (Get $get, Set $set) {
+                            $total_price = collect($get('items'))->map(fn (array $item) => str($item['price'])->remove([',', '.'])->toInteger())->values()->sum();
+
+                            $formated_total_price = number_format($total_price / 100, 2, ',', '.');
+
+                            $set('total', $formated_total_price);
+                        }),
+                    Components\Wizard\Step::make('Pagamento')
                         ->schema([
-                            Forms\Components\Select::make('status')
+                            Components\Select::make('status')
                                 ->native(false)
                                 ->options(OrderStatusEnum::class)
                                 ->required(),
-                            Forms\Components\Select::make('payment_method')
+                            Components\Select::make('payment_method')
                                 ->label('Método de pagamento')
                                 ->native(false)
                                 ->options(PaymentMethodsEnum::class)
