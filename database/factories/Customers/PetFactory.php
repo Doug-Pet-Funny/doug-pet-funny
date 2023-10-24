@@ -17,7 +17,10 @@ class PetFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name'         => fake()->name(),
+            'birth_date'   => fake()->date(),
+            'color'        => fake()->colorName(),
+            'observations' => fake()->realText()
         ];
     }
 }

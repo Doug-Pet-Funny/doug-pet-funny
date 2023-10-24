@@ -83,10 +83,8 @@ class CustomerResource extends Resource
                                         ->maxLength(255),
                                     Forms\Components\DatePicker::make('birth_date')
                                         ->label('Data de Nascimento'),
-                                    Forms\Components\TextInput::make('weight')
-                                        ->label('Peso')
-                                        ->suffix('Kg')
-                                        ->numeric()
+                                    Forms\Components\TextInput::make('color')
+                                        ->label('Cor')
                                 ])->columns(3),
 
                                 Forms\Components\Group::make([

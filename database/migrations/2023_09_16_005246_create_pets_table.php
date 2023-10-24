@@ -18,8 +18,8 @@ return new class extends Migration
             $table->date('birth_date')->nullable();
             $table->foreignId('animal_id')->references('id')->on('animals');
             $table->foreignId('breed_id')->nullable()->constrained()->references('id')->on('breeds');
-            $table->float('weight')->nullable();
-            $table->text('observation')->nullable();
+            $table->string('color')->nullable();
+            $table->text('observations')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

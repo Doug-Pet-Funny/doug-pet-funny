@@ -12,7 +12,7 @@ class Pet extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['customer_id', 'name', 'birth_date', 'animal_id', 'breed_id', 'weight', 'observation'];
+    protected $fillable = ['customer_id', 'name', 'birth_date', 'animal_id', 'breed_id', 'color', 'observations'];
 
     public function customer(): BelongsTo
     {
