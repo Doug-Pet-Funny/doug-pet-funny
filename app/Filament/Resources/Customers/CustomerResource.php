@@ -36,12 +36,19 @@ class CustomerResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Informações do usuário')
                     ->icon('heroicon-o-user-circle')
+                    ->columns([
+                        'sm' => 1,
+                        'md' => 3
+                    ])
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->label('Nome')
                             ->required()
                             ->maxLength(255)
-                            ->columnSpan(2),
+                            ->columnSpan([
+                                'sm' => 'full',
+                                'md' => 2
+                            ]),
                         Forms\Components\TextInput::make('email')
                             ->label('Email')
                             ->nullable()
@@ -58,7 +65,7 @@ class CustomerResource extends Resource
                             ->unique(ignoreRecord: true),
                         Forms\Components\DatePicker::make('birth_date')
                             ->label('Data de Nascimento'),
-                    ])->columns(3),
+                    ]),
 
                 Forms\Components\Section::make('Pets')
                     ->icon('heroicon-o-heart')
