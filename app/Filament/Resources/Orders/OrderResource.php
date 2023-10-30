@@ -189,9 +189,9 @@ class OrderResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
-
+    
     public static function getNavigationBadge(): ?string
     {
-        return Order::count();
+        return static::getModel()::count();
     }
 }

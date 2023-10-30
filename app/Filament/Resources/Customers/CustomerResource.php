@@ -284,6 +284,6 @@ class CustomerResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Customer::count();
+        return static::getModel()::count();
     }
 }
