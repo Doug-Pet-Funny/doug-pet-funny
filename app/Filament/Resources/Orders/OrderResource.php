@@ -8,7 +8,7 @@ use App\Filament\Resources\Orders\OrderResource\Pages;
 use App\Filament\Resources\Orders\OrderResource\RelationManagers;
 use App\Models\Customers\Customer;
 use App\Models\Orders\Order;
-use App\Models\Services\Product;
+use App\Models\Services\Service;
 use Filament\Forms;
 use Filament\Forms\Components;
 use Filament\Forms\Form;
@@ -52,13 +52,13 @@ class OrderResource extends Resource
                                 ->hidden(fn (Get $get) => !$get('customer_id'))
                                 ->schema([
                                     Components\Select::make('item')
-                                        ->options(Product::all()->pluck('name', 'id'))
+                                        ->options(Service::all()->pluck('name', 'id'))
                                         ->native(false)
                                         ->required()
                                         ->live()
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
-                                            number_format(Product::find($state)?->price * $get('quantity') / 100, 2, ',', '.')
+                                            number_format(Service::find($state)?->price * $get('quantity') / 100, 2, ',', '.')
                                         )),
 
                                     Components\TextInput::make('quantity')
@@ -70,7 +70,7 @@ class OrderResource extends Resource
                                         ->live()
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
-                                            number_format(Product::find($get('item'))->price * $state / 100, 2, ',', '.')
+                                            number_format(Service::find($get('item'))->price * $state / 100, 2, ',', '.')
                                         )),
 
                                     Money::make('price')
@@ -81,7 +81,7 @@ class OrderResource extends Resource
 
                                     Components\Select::make('pet')
                                         ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'id'))
-                                        ->hidden(fn (Get $get) => !Product::find($get('item'))?->is_service)
+                                        ->hidden(fn (Get $get) => !Service::find($get('item'))?->is_service)
                                         ->native(false)
                                         ->columnSpanFull()
                                         ->required()

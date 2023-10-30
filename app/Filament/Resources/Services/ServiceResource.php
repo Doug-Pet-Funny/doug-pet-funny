@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Services;
 
-use App\Filament\Resources\Services\ProductResource\Pages;
-use App\Filament\Resources\Services\ProductResource\RelationManagers;
-use App\Models\Services\Product;
+use App\Filament\Resources\Services\ServiceResource\Pages;
+use App\Filament\Resources\Services\ServiceResource\RelationManagers;
+use App\Models\Services\Service;
 use Filament\Forms\Components;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 
-class ProductResource extends Resource
+class ServiceResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = Service::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-scissors';
 
@@ -91,7 +91,7 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageProducts::route('/'),
+            'index' => Pages\ManageServices::route('/'),
         ];
     }
 

@@ -2,18 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\Services\Product;
+use App\Models\Services\Service;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProductSeeder extends Seeder
+class ServiceSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Product::create([
+        Service::create([
             'name'        => 'Banho',
             'description' => 'Tosa',
             'price'       => 6500,
