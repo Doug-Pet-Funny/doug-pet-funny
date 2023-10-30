@@ -78,13 +78,6 @@ class OrderResource extends Resource
                                         ->required()
                                         ->readOnly()
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
-
-                                    Components\Select::make('pet')
-                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'id'))
-                                        ->hidden(fn (Get $get) => !Service::find($get('item'))?->is_service)
-                                        ->native(false)
-                                        ->columnSpanFull()
-                                        ->required()
                                 ]),
                         ]),
                     Components\Wizard\Step::make('Informações')

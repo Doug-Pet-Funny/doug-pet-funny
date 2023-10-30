@@ -17,7 +17,6 @@ class ServiceSeeder extends Seeder
             'name'        => 'Banho',
             'description' => 'Tosa',
             'price'       => 6500,
-            'is_service'  => true
         ]);
     }
 }

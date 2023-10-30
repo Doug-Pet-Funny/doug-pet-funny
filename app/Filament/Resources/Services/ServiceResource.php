@@ -40,10 +40,7 @@ class ServiceResource extends Resource
                 Components\Textarea::make('description')
                     ->label('Descrição')
                     ->nullable()
-                    ->columnSpanFull(),
-                Components\Toggle::make('is_service')
-                    ->label('É um serviço?')
-                    ->inline(false)
+                    ->columnSpanFull()
             ]);
     }
 
@@ -63,9 +60,6 @@ class ServiceResource extends Resource
                     ->label('Preço')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_service')
-                    ->label('É um serviço?')
-                    ->boolean()
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
