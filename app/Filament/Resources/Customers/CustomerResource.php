@@ -57,6 +57,7 @@ class CustomerResource extends Resource
                             ->maxLength(255),
                         PhoneNumber::make('phone')
                             ->label('Telefone')
+                            ->mask('(99) 99999-9999')
                             ->required()
                             ->maxLength(255),
                         Document::make('document')
