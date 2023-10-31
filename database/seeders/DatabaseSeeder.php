@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             AnimalSeeder::class,
             ServiceSeeder::class,
             CustomerSeeder::class,
+            ItemSeeder::class,
         ]);
     }
 }
