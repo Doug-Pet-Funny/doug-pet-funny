@@ -52,13 +52,13 @@ class OrderResource extends Resource
                                 ->hidden(fn (Get $get) => !$get('customer_id'))
                                 ->schema([
                                     Components\Select::make('item')
-                                        ->options(Service::all()->pluck('name', 'id'))
+                                        ->options(Service::all()->pluck('name'))
                                         ->native(false)
                                         ->required()
                                         ->live()
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
-                                            number_format(Service::find($state)?->price * $get('quantity') / 100, 2, ',', '.')
+                                            number_format(Service::where('name', $state)->get()->first()?->price * $get('quantity') / 100, 2, ',', '.')
                                         )),
 
                                     Components\TextInput::make('quantity')
