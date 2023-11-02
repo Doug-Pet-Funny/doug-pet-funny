@@ -2,7 +2,6 @@
 
 namespace Database\Factories\Services;
 
-use App\Enums\ServicesEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +21,6 @@ class EmployeeFactory extends Factory
             'phone'    => fake()->phoneNumber(),
             'email'    => fake()->email(),
             'document' => fake()->cpf(false),
-            'services' => fake()->randomElements(ServicesEnum::cases()),
         ];
     }
 }
