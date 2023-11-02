@@ -20,7 +20,7 @@ class EmployeeFactory extends Factory
             'name'     => fake()->name(),
             'phone'    => fake()->phoneNumber(),
             'email'    => fake()->email(),
-            'document' => fake()->cpf(false),
+            'document' => fake()->cpf(),
         ];
     }
 }
