@@ -4,15 +4,17 @@ namespace App\Models\Services;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'phone', 'email', 'document', 'services'];
+    protected $fillable = ['name', 'phone', 'email', 'document'];
 
-    protected $casts = [
-        'services' => 'array',
-    ];
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class);
+    }
 }

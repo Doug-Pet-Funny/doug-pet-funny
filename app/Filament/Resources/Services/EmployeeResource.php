@@ -39,21 +39,21 @@ class EmployeeResource extends Resource
                     ->label('Telefone')
                     ->mask('(99) 99999-9999')
                     ->required()
-                    ->unique(),
+                    ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
                     ->maxLength(255)
-                    ->unique(),
+                    ->unique(ignoreRecord: true),
                 Forms\Components\TextInput::make('document')
                     ->label('CPF')
                     ->required()
                     ->mask('999.999.999-99')
-                    ->unique(),
+                    ->unique(ignoreRecord: true),
                 Forms\Components\CheckboxList::make('services')
                     ->label('Serviços')
+                    ->relationship('services', 'name')
                     ->required()
-                    ->options(ServicesEnum::class),
             ]);
     }
 
@@ -69,10 +69,16 @@ class EmployeeResource extends Resource
                     ->label('Telefone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('document')
                     ->label('CPF')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('services_count')
+                    ->label('Serviços')
+                    ->counts('services')
+                    ->badge()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i:s')
