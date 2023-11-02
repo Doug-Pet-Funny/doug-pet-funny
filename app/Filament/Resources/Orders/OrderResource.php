@@ -38,24 +38,32 @@ class OrderResource extends Resource
                 Components\Wizard::make([
                     Components\Wizard\Step::make('items')
                         ->label('Items')
+                        ->columns(4)
                         ->schema([
                             Components\Select::make('customer_id')
                                 ->label('Cliente')
                                 ->searchable()
-                                ->relationship('customer', 'name')
+                                ->relationship(name: 'customer', titleAttribute: 'name')
                                 ->required()
-                                ->live(),
+                                ->live()
+                                ->columnSpan(3),
+                            Components\DatePicker::make('date')
+                                ->label('Data')
+                                ->required()
+                                ->columnSpan(1),
                             Components\Repeater::make('items')
                                 ->required()
-                                ->columns(3)
+                                ->columns(4)
                                 ->addActionLabel('Adicionar item')
                                 ->hidden(fn (Get $get) => !$get('customer_id'))
+                                ->columnSpanFull()
                                 ->schema([
                                     Components\Select::make('item')
                                         ->options(Service::all()->pluck('name'))
                                         ->native(false)
                                         ->required()
                                         ->live()
+                                        ->columnSpan(2)
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
                                             number_format(Service::where('name', $state)->get()->first()?->price * $get('quantity') / 100, 2, ',', '.')
@@ -68,6 +76,7 @@ class OrderResource extends Resource
                                         ->default(1)
                                         ->disabled(fn (Get $get) => $get('item') === null)
                                         ->live()
+                                        ->columnSpan(1)
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
                                             number_format(Service::find($get('item'))->price * $state / 100, 2, ',', '.')
@@ -77,7 +86,22 @@ class OrderResource extends Resource
                                         ->label('Preço')
                                         ->required()
                                         ->readOnly()
+                                        ->columnSpan(1)
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
+
+                                    Components\Select::make('pet')
+                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'id'))
+                                        ->native(false)
+                                        ->columnSpan(2)
+                                        ->required(),
+                                    Components\TimePicker::make('start_hour')
+                                        ->label('Chegada')
+                                        ->required()
+                                        ->columnSpan(1),
+                                    Components\TimePicker::make('end_hour')
+                                        ->label('Término')
+                                        ->required()
+                                        ->columnSpan(1),
                                 ]),
                         ]),
                     Components\Wizard\Step::make('Informações')
