@@ -8,6 +8,7 @@ use App\Filament\Resources\Orders\OrderResource\Pages;
 use App\Filament\Resources\Orders\OrderResource\RelationManagers;
 use App\Models\Customers\Customer;
 use App\Models\Orders\Order;
+use App\Models\Services\Employee;
 use App\Models\Services\Service;
 use Filament\Forms;
 use Filament\Forms\Components;
@@ -59,12 +60,12 @@ class OrderResource extends Resource
                                 ->columnSpanFull()
                                 ->schema([
                                     Components\Select::make('item')
-                                        ->options(Service::all()->pluck('name'))
+                                        ->options(Service::all()->pluck('name', 'name'))
                                         ->native(false)
                                         ->required()
                                         ->live()
                                         ->columnSpan(2)
-                                        ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
+                                        ->afterStateUpdated(fn (?string $state, Get $get, Set $set) => $set(
                                             'price',
                                             number_format(Service::where('name', $state)->get()->first()?->price * $get('quantity') / 100, 2, ',', '.')
                                         )),
@@ -74,14 +75,14 @@ class OrderResource extends Resource
                                         ->required()
                                         ->numeric()
                                         ->default(1)
+                                        ->minValue(1)
                                         ->disabled(fn (Get $get) => $get('item') === null)
                                         ->live()
                                         ->columnSpan(1)
                                         ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
                                             'price',
-                                            number_format(Service::find($get('item'))->price * $state / 100, 2, ',', '.')
+                                            number_format(Service::where('name', $get('item'))->get()->first()->price * $state / 100, 2, ',', '.')
                                         )),
-
                                     Money::make('price')
                                         ->label('Preço')
                                         ->required()
@@ -90,18 +91,21 @@ class OrderResource extends Resource
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
 
                                     Components\Select::make('pet')
-                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'id'))
+                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name'))
                                         ->native(false)
-                                        ->columnSpan(2)
+                                        ->required(),
+                                    Components\Select::make('employee')
+                                        ->label('Funcionário')
+                                        ->options(fn (Get $get) => Employee::whereHas('services', fn (Builder $query) => $query->where('name', $get('item')))->pluck('name'))
+                                        ->native(false)
+                                        ->live()
                                         ->required(),
                                     Components\TimePicker::make('start_hour')
                                         ->label('Chegada')
-                                        ->required()
-                                        ->columnSpan(1),
+                                        ->required(),
                                     Components\TimePicker::make('end_hour')
                                         ->label('Término')
-                                        ->required()
-                                        ->columnSpan(1),
+                                        ->required(),
                                 ]),
                         ]),
                     Components\Wizard\Step::make('Informações')
