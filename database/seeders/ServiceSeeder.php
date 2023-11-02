@@ -15,8 +15,14 @@ class ServiceSeeder extends Seeder
     {
         Service::create([
             'name'        => 'Banho',
-            'description' => 'Tosa',
+            'description' => 'Banho convêncional',
             'price'       => 6500,
+        ]);
+
+        Service::create([
+            'name'        => 'Tosa',
+            'description' => 'Tosa convêncional',
+            'price'       => 5000,
         ]);
     }
 }
