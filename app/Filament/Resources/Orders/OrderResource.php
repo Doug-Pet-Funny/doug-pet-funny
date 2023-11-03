@@ -6,6 +6,7 @@ use App\Enums\OrderStatusEnum;
 use App\Enums\PaymentMethodsEnum;
 use App\Filament\Resources\Orders\OrderResource\Pages;
 use App\Filament\Resources\Orders\OrderResource\RelationManagers;
+use App\Models\Animals\Item;
 use App\Models\Customers\Customer;
 use App\Models\Orders\Order;
 use App\Models\Services\Employee;
@@ -17,6 +18,7 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -39,19 +41,13 @@ class OrderResource extends Resource
                 Components\Wizard::make([
                     Components\Wizard\Step::make('items')
                         ->label('Items')
-                        ->columns(4)
                         ->schema([
                             Components\Select::make('customer_id')
                                 ->label('Cliente')
                                 ->searchable()
                                 ->relationship(name: 'customer', titleAttribute: 'name')
                                 ->required()
-                                ->live()
-                                ->columnSpan(3),
-                            Components\DatePicker::make('date')
-                                ->label('Data')
-                                ->required()
-                                ->columnSpan(1),
+                                ->live(),
                             Components\Repeater::make('items')
                                 ->required()
                                 ->columns(4)
@@ -88,30 +84,50 @@ class OrderResource extends Resource
                                         ->required()
                                         ->readOnly()
                                         ->columnSpan(1)
+                                        ->formatStateUsing(fn (?int $state): string => number_format($state / 100, 2, ',', '.'))
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
 
                                     Components\Select::make('pet')
                                         ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name'))
                                         ->native(false)
-                                        ->required(),
+                                        ->required()
+                                        ->columnSpan(2),
                                     Components\Select::make('employee')
                                         ->label('Funcionário')
                                         ->options(fn (Get $get) => Employee::whereHas('services', fn (Builder $query) => $query->where('name', $get('item')))->pluck('name'))
                                         ->native(false)
                                         ->live()
-                                        ->required(),
-                                    Components\TimePicker::make('start_hour')
-                                        ->label('Chegada')
-                                        ->required(),
-                                    Components\TimePicker::make('end_hour')
-                                        ->label('Término')
-                                        ->required(),
+                                        ->required()
+                                        ->columnSpan(2),
                                 ]),
                         ]),
+
                     Components\Wizard\Step::make('Informações')
+                        ->columns(3)
                         ->schema([
+                            Components\DatePicker::make('date')
+                                ->label('Data')
+                                ->required()
+                                ->columnSpan(1),
+                            Components\TimePicker::make('start_hour')
+                                ->label('Chegada')
+                                ->required()
+                                ->columnSpan(1),
+                            Components\TimePicker::make('end_hour')
+                                ->label('Término')
+                                ->required()
+                                ->columnSpan(1),
+
+                            Components\Select::make('animal_objects')
+                                ->label('Objetos deixados com o animal')
+                                ->options(Item::all()->pluck('name'))
+                                ->multiple()
+                                ->columnSpanFull(),
+
                             Components\RichEditor::make('observations')
-                                ->label('Observação'),
+                                ->label('Observação')
+                                ->columnSpanFull(),
+
                         ])->afterValidation(function (Get $get, Set $set) {
                             $total_price = collect($get('items'))->map(fn (array $item) => str($item['price'])->remove([',', '.'])->toInteger())->values()->sum();
 
@@ -119,6 +135,7 @@ class OrderResource extends Resource
 
                             $set('total', $formated_total_price);
                         }),
+
                     Components\Wizard\Step::make('Pagamento')
                         ->schema([
                             Components\Select::make('status')
@@ -134,7 +151,8 @@ class OrderResource extends Resource
                                 ->label('Total')
                                 ->required()
                                 ->readOnly()
-                                ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
+                                ->formatStateUsing(fn (?int $state): string => number_format($state / 100, 2, ',', '.'))
+                                ->dehydrateStateUsing(fn (string $state): int => str($state)->remove([',', '.'])->toInteger()),
                         ]),
                 ])->columnSpanFull(),
             ]);
@@ -143,17 +161,36 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->groups([
+                Group::make('date')
+                    ->label('Data')
+                    ->getTitleFromRecordUsing(fn (?Order $record): ?string => date('d/m/Y', strtotime($record->date)))
+                    ->collapsible(),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Cliente')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->searchable()
                     ->badge(),
                 Tables\Columns\TextColumn::make('payment_method')
+                    ->label('Método de Pagamento')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total')
                     ->numeric()
+                    ->sortable()
+                    ->formatStateUsing(fn (?int $state): string => "R$ " . number_format($state / 100, 2, ',', '.')),
+                Tables\Columns\TextColumn::make('date')
+                    ->label('Data')
+                    ->date('d/m/Y')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('start_hour')
+                    ->label('Chegada')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('end_hour')
+                    ->label('Término')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
