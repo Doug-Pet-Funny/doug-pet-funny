@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\Animals;
+namespace App\Filament\Resources\Services;
 
-use App\Filament\Resources\Animals\AnimalResource\Pages;
-use App\Filament\Resources\Animals\AnimalResource\RelationManagers;
-use App\Models\Animals\Animal;
+use App\Enums\ServicesEnum;
+use App\Filament\Resources\Services\EmployeeResource\Pages;
+use App\Filament\Resources\Services\EmployeeResource\RelationManagers;
+use App\Models\Services\Employee;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,27 +14,46 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AnimalResource extends Resource
+class EmployeeResource extends Resource
 {
-    protected static ?string $model = Animal::class;
+    protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-bug-ant';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $modelLabel = 'animal';
+    protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $pluralModelLabel = 'animais';
+    protected static ?string $modelLabel = 'funcionário';
 
-    protected static ?string $navigationGroup = 'Animais';
+    protected static ?string $navigationGroup = 'Serviços';
 
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(1)
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label('Nome')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('phone')
+                    ->label('Telefone')
+                    ->mask('(99) 99999-9999')
+                    ->required()
+                    ->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('email')
+                    ->email()
                     ->required()
                     ->maxLength(255)
-                    ->columnSpanFull()
                     ->unique(ignoreRecord: true),
+                Forms\Components\TextInput::make('document')
+                    ->label('CPF')
+                    ->required()
+                    ->mask('999.999.999-99')
+                    ->unique(ignoreRecord: true),
+                Forms\Components\CheckboxList::make('services')
+                    ->label('Serviços')
+                    ->relationship('services', 'name')
+                    ->required()
             ]);
     }
 
@@ -45,6 +65,20 @@ class AnimalResource extends Resource
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label('Telefone')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('document')
+                    ->label('CPF')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('services_count')
+                    ->label('Serviços')
+                    ->counts('services')
+                    ->badge()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i:s')
@@ -76,16 +110,13 @@ class AnimalResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAnimals::route('/'),
+            'index' => Pages\ManageEmployees::route('/'),
         ];
     }
 

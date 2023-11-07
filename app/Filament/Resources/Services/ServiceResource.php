@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Services;
 
-use App\Filament\Resources\Services\ProductResource\Pages;
-use App\Filament\Resources\Services\ProductResource\RelationManagers;
-use App\Models\Services\Product;
+use App\Filament\Resources\Services\ServiceResource\Pages;
+use App\Filament\Resources\Services\ServiceResource\RelationManagers;
+use App\Models\Services\Service;
 use Filament\Forms\Components;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Leandrocfe\FilamentPtbrFormFields\Money;
 
-class ProductResource extends Resource
+class ServiceResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = Service::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-scissors';
 
@@ -40,10 +40,7 @@ class ProductResource extends Resource
                 Components\Textarea::make('description')
                     ->label('Descrição')
                     ->nullable()
-                    ->columnSpanFull(),
-                Components\Toggle::make('is_service')
-                    ->label('É um serviço?')
-                    ->inline(false)
+                    ->columnSpanFull()
             ]);
     }
 
@@ -63,9 +60,21 @@ class ProductResource extends Resource
                     ->label('Preço')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_service')
-                    ->label('É um serviço?')
-                    ->boolean()
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->dateTime('d/m/Y H:i:s')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Atualizado em')
+                    ->dateTime('d/m/Y H:i:s')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->label('Excluído em')
+                    ->dateTime('d/m/Y H:i:s')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -91,7 +100,7 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageProducts::route('/'),
+            'index' => Pages\ManageServices::route('/'),
         ];
     }
 
@@ -101,5 +110,10 @@ class ProductResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

@@ -1,6 +1,6 @@
 # Doug Pet Funny
 
-## Versão: 0.0.1
+## Versão: 0.1.0
 
 ## Status do Projeto: 🚧 Em Andamento
 
@@ -19,14 +19,14 @@
   - [Sem Docker](#sem-docker)
 
 - [Testes realizados](#testes-realizados)
+   - [Informativo](#informativo)
+   - [Testes de Sistema](#testes-de-sistema)
+   - [Testes de Aceitação](#testes-de-aceitação)
+   - [Testes de Caixa Branca](#testes-de-caixa-branca)
 
 - [Banco de Dados](#banco-de-dados)
 
 - [Linguagens, dependências e libs utilizadas](#linguagens-dependencias-e-libs-utilizadas)
-
-- [Resolvendo problemas](#resolvendo-problemas)
-
-- [Recursos inseridos](#recursos-de-inseridos)
 
 - [Desenvolvedores/Contribuintes](#desenvolvedorescontribuintes)
 
@@ -248,11 +248,68 @@ Se tudo foi configurado corretamente, seu projeto Laravel será acessível em `h
 
 ## Testes realizados
 
-...
+### Informativo
+
+| CLIENTE      | Douglas                                                                           | AMBIENTE DE TESTE      | 0.2                                          |
+|--------------|-----------------------------------------------------------------------------------|------------------------|----------------------------------------------|
+| PROJETO      | Doug Pet Funny                                                                    | HARDWARE               | Notebook Lenovo Ryzen 7520U                  |
+| COLABORADOR  | Mateus Maranhão, Mateus Stefanelli, Vitor Pinto, Felipe Portari, Rafael Vicentini | SISTEMA OPERACIONAL    | Linux 23.04                                  |
+| REVISADO     | Mateus Stefanelli e Felipe                                                        | DESCRIÇÃO DO SOFTWARE  | Opera GX versão LVL 5 (core: 102.0.4880.104) |
+| DATA CRIAÇÃO | 07/09/2023                                                                        | AMBIENTE DE TESTE      | 0.2                                          |
+| TESTADO POR  | Mateus Maranhão, Mateus Stefanelli, Felipe Portari, Rafael Vicentini              | HARDWARE               | Notebook Dell Intel 7 Oitava Geração         |
+
+### Testes de Sistema
+
+| ID | TITULO | FUNCIONALIDADE/COMPONENTE | EXECUÇÃO                    | RESULTADO ESPERADO                    | STATUS | OBS. |
+|----|--------|---------------------------|-----------------------------|---------------------------------------|--------|------|
+| 1  | Login  | Campo usuário e senha     | Email correto e senha correta   | Login concluído                       | ok     |      |
+| 2  | Login  | Campo usuário e senha     | Email correto e senha incorreta  | Retorna uma mensagem + falha no login | ok     |      |
+| 3  | Login  | Campo usuário e senha     | Email correto e senha vazia   | Retorna uma mensagem + falha no login | ok     |      |
+| 4  | Login  | Campo usuário e senha     | Email incorreto e senha correta  | Retorna uma mensagem + falha no login | ok     |      |
+| 5  | Login  | Campo usuário e senha     | Email incorreto e senha incorreta | Retorna uma mensagem + falha no login | ok     |      |
+| 6  | Login  | Campo usuário e senha     | Email vazio e senha correta   | Retorna uma mensagem + falha no login | ok     |      |
+| 7  | Login  | Campo usuário e senha     | Ambos vazios                | Retorna uma mensagem + falha no login | ok     |      |
+| 8  | Login  | Campo usuário e senha     | Email incorreto e senha vazia  | Retorna uma mensagem + falha no login | ok     |      |
+
+### Testes de Aceitação
+
+| ID | REQUISITO        | OPERAÇÃO                                                                             | RESULTADO ESPERADO                                                       | COMENTÁRIO DO CLIENTE | STATUS | RISCOS/AÇÕES |
+|----|------------------|--------------------------------------------------------------------------------------|--------------------------------------------------------------------------|-----------------------|--------|--------------|
+| 1  | Recuperar senha  | Inserir um email existente/cadastrado e receber a recuperação de senha no email      | Receber um email com o link de redefinição de senha, Alteração da senha. |                       | OK     |              |
+| 2  | Editar um pedido | Trocar informações de um pedido                                                      | Atualizar um pedido                                                      |                       | OK     |              |
+| 3  | Login            | Inserir um email existente/cadastrado e sua respectiva senha + Clicar no botão login | Entrar no sistema                                                        |                       | OK     |              |
+| 4  | Editar um pedido | Trocar informações de um pedido                                                      | Atualizar um pedido                                                      |                       | OK     |              |
+
+### Testes de Caixa Branca
+
+| PROJETO / SISTEMA | Doug Pet Funny                 |
+|-------------------|--------------------------------|
+| REVISOR           | Mateus Rodrigues e Vitor Bizarra|
+| DATA DA REVISÃO   | 06/11/2023                     |
+
+| ID | ITEM                                                               | STATUS | ARTEFATO COM ERRO | CORREÇÕES A SEREM REALIZADAS |
+|----|--------------------------------------------------------------------|--------|-------------------|------------------------------|
+| 1  | O código está documentado conforme os padrões da empresa?          | SIM    |                   |                              |
+| 2  | Os arquivos e classes estão com a nomenclatura significativa?      | SIM    |                   |                              |
+| 3  | As variáveis e as constantes estão com nomenclatura significativa? | SIM    |                   |                              |
+| 4  | Existe algum loop sem condição de parada?                          | NÃO    |                   |                              |
+| 5  | Existe alguma variável não inicializada?                           | NÃO    |                   |                              |
+| 6  | O código obedece a arquitetura definida para o sistema?            | SIM    |                   |                              |
+| 7  | Foi realizado o tratamento de exceções?                            | SIM    |                   |                              |
 
 ## Banco de Dados
 
-...
+Para a criação das tabelas do banco de dados utilizamos o comando:
+
+```bash
+php artisan migrate
+```
+
+Ou, se estiver utilizando Docker com Laravel Sail:
+
+```bash
+sail artisan migrate
+```
 
 ## Linguagens, dependencias e libs utilizadas
 
@@ -260,14 +317,6 @@ Se tudo foi configurado corretamente, seu projeto Laravel será acessível em `h
 - Docker
 - Composer
 - NPM
-
-## Resolvendo Problemas
-
-...
-
-## Recursos de inseridos
-
-...
 
 ## Desenvolvedores/Contribuintes
 

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Animals;
 
-use App\Filament\Resources\Animals\AnimalResource\Pages;
-use App\Filament\Resources\Animals\AnimalResource\RelationManagers;
-use App\Models\Animals\Animal;
+use App\Filament\Resources\Animals\ItemResource\Pages;
+use App\Filament\Resources\Animals\ItemResource\RelationManagers;
+use App\Models\Animals\Item;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,15 +13,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class AnimalResource extends Resource
+class ItemResource extends Resource
 {
-    protected static ?string $model = Animal::class;
+    protected static ?string $model = Item::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-bug-ant';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $modelLabel = 'animal';
+    protected static ?string $modelLabel = 'item';
 
-    protected static ?string $pluralModelLabel = 'animais';
+    protected static ?string $pluralModelLabel = 'itens';
 
     protected static ?string $navigationGroup = 'Animais';
 
@@ -31,9 +31,7 @@ class AnimalResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255)
-                    ->columnSpanFull()
-                    ->unique(ignoreRecord: true),
+                    ->maxLength(255),
             ]);
     }
 
@@ -76,16 +74,13 @@ class AnimalResource extends Resource
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
-            ])
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageAnimals::route('/'),
+            'index' => Pages\ManageItems::route('/'),
         ];
     }
 
