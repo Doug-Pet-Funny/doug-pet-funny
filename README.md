@@ -1,6 +1,6 @@
 # Doug Pet Funny
 
-## Versão: 0.0.1
+## Versão: 0.1.0
 
 ## Status do Projeto: 🚧 Em Andamento
 
