@@ -1,6 +1,6 @@
 # Doug Pet Funny
 
-## Versão: 0.0.1
+## Versão: 0.1.1
 
 ## Status do Projeto: 🚧 Em Andamento
 
@@ -27,6 +27,8 @@
 - [Banco de Dados](#banco-de-dados)
 
 - [Linguagens, dependências e libs utilizadas](#linguagens-dependencias-e-libs-utilizadas)
+
+- [Documentação Tela de Login](app/Filament/Pages/Auth/Login.php)
 
 - [Desenvolvedores/Contribuintes](#desenvolvedorescontribuintes)
 
