@@ -14,7 +14,7 @@ class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['customer_id', 'status', 'payment_method', 'total', 'items', 'date', 'start_hour', 'end_hour', 'animal_objects', 'observations'];
+    protected $fillable = ['customer_id', 'status', 'payment_method', 'total', 'items', 'service_date', 'start_hour', 'end_hour', 'animal_objects', 'observations'];
 
     protected $casts = [
         'status'         => OrderStatusEnum::class,

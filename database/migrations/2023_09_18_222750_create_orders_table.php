@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('payment_method');
             $table->integer('total');
             $table->json('items');
-            $table->date('date');
+            $table->date('service_date');
             $table->time('start_hour');
             $table->time('end_hour');
             $table->json('animal_objects')->nullable();

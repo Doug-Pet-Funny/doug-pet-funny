@@ -109,7 +109,7 @@ class OrderResource extends Resource
                     Components\Wizard\Step::make('Informações')
                         ->columns(3)
                         ->schema([
-                            Components\DatePicker::make('date')
+                            Components\DatePicker::make('service_date')
                                 ->label('Data')
                                 ->required()
                                 ->columnSpan(1),
@@ -166,7 +166,7 @@ class OrderResource extends Resource
     {
         return $table
             ->groups([
-                Group::make('date')
+                Group::make('service_date')
                     ->label('Data')
                     ->getTitleFromRecordUsing(fn(?Order $record): ?string => date('d/m/Y', strtotime($record->date)))
                     ->collapsible(),
@@ -186,7 +186,7 @@ class OrderResource extends Resource
                     ->numeric()
                     ->sortable()
                     ->formatStateUsing(fn(?int $state): string => "R$ " . number_format($state / 100, 2, ',', '.')),
-                Tables\Columns\TextColumn::make('date')
+                Tables\Columns\TextColumn::make('service_date')
                     ->label('Data')
                     ->date('d/m/Y')
                     ->sortable(),
@@ -218,7 +218,7 @@ class OrderResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('status')
                     ->options(OrderStatusEnum::class),
-                Tables\Filters\Filter::make('date')
+                Tables\Filters\Filter::make('service_date')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
                             ->label('De'),
@@ -229,11 +229,11 @@ class OrderResource extends Resource
                         return $query
                             ->when(
                                 $data['created_from'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('service_date', '>=', $date),
                             )
                             ->when(
                                 $data['created_until'],
-                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                                fn(Builder $query, $date): Builder => $query->whereDate('service_date', '<=', $date),
                             );
                     })
             ])
