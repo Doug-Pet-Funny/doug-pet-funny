@@ -20,7 +20,7 @@ class OrdersChart extends ChartWidget
     {
         $activeFilter = $this->filter;
 
-        $query = $activeFilter != 'all' ? Order::withTrashed()->where('payment_method', $activeFilter) : Order::onlyTrashed();
+        $query = $activeFilter != 'all' ? Order::withTrashed()->where('payment_method', $activeFilter) : Order::withTrashed();
 
         $data = Trend::query($query)
             ->between(
