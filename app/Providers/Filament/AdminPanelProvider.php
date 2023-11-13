@@ -47,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->widgets([
                 Widgets\AccountWidget::class,
+                Widgets\OrdersChart::class,
                 Widgets\PaymentMethodsChart::class,
             ])
             ->middleware([
