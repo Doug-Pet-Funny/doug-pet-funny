@@ -12,6 +12,8 @@ class OrdersChart extends ChartWidget
 {
     protected static ?string $heading = 'Serviços';
 
+    protected static ?string $description = 'Total em reais de acordo com o filtro.';
+
     protected int|string|array $columnSpan = 2;
 
     public ?string $filter = 'all';
@@ -23,22 +25,23 @@ class OrdersChart extends ChartWidget
         $query = $activeFilter != 'all' ? Order::withTrashed()->where('payment_method', $activeFilter) : Order::withTrashed();
 
         $data = Trend::query($query)
+            ->dateColumn('service_date')
             ->between(
                 start: now()->startOfYear(),
                 end: now()->endOfYear(),
             )
             ->perMonth()
-            ->count();
+            ->sum('total');
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Pedidos',
-                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
+                    'label' => 'R$',
+                    'data' => $data->map(fn(TrendValue $value) => number_format($value->aggregate / 100, decimal_separator: ',', thousands_separator: '.')),
                     'fill' => true,
                 ],
             ],
-            'labels' => $data->map(fn(TrendValue $value) => $value->date),
+            'labels' => ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
         ];
     }
 
