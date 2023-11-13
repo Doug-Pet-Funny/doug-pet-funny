@@ -35,4 +35,18 @@ class ListOrders extends ListRecords
 
         return $tabs;
     }
+
+    public static function getWidgets(): array
+    {
+        return [
+            OrderResource\Widgets\OrdersOverview::class,
+        ];
+    }
+
+    public function getHeaderWidgets(): array
+    {
+        return [
+            OrderResource\Widgets\OrdersOverview::class,
+        ];
+    }
 }
