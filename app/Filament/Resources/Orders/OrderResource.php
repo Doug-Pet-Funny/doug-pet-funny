@@ -88,13 +88,13 @@ class OrderResource extends Resource
                                         ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
 
                                     Components\Select::make('pet')
-                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name'))
+                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'name'))
                                         ->native(false)
                                         ->required()
                                         ->columnSpan(2),
                                     Components\Select::make('employee')
                                         ->label('Funcionário')
-                                        ->options(fn (Get $get) => Employee::whereHas('services', fn (Builder $query) => $query->where('name', $get('item')))->pluck('name'))
+                                        ->options(fn (Get $get) => Employee::whereHas('services', fn (Builder $query) => $query->where('name', $get('item')))->pluck('name', 'name'))
                                         ->native(false)
                                         ->live()
                                         ->required()
