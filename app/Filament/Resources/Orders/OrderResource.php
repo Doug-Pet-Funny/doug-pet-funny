@@ -52,7 +52,7 @@ class OrderResource extends Resource
                                 ->required()
                                 ->columns(4)
                                 ->addActionLabel('Adicionar item')
-                                ->hidden(fn (Get $get) => !$get('customer_id'))
+                                ->hidden(fn(Get $get) => !$get('customer_id'))
                                 ->columnSpanFull()
                                 ->schema([
                                     Components\Select::make('item')
@@ -61,10 +61,12 @@ class OrderResource extends Resource
                                         ->required()
                                         ->live()
                                         ->columnSpan(2)
-                                        ->afterStateUpdated(fn (?string $state, Get $get, Set $set) => $set(
-                                            'price',
-                                            number_format(Service::where('name', $state)->get()->first()?->price * $get('quantity') / 100, 2, ',', '.')
-                                        )),
+                                        ->afterStateUpdated(
+                                            fn(?string $state, Get $get, Set $set) => $set(
+                                                'price',
+                                                number_format(Service::where('name', $state)->get()->first()?->price * $get('quantity') / 100, 2, ',', '.')
+                                            )
+                                        ),
 
                                     Components\TextInput::make('quantity')
                                         ->label('Quantidade')
@@ -72,29 +74,31 @@ class OrderResource extends Resource
                                         ->numeric()
                                         ->default(1)
                                         ->minValue(1)
-                                        ->disabled(fn (Get $get) => $get('item') === null)
+                                        ->disabled(fn(Get $get) => $get('item') === null)
                                         ->live()
                                         ->columnSpan(1)
-                                        ->afterStateUpdated(fn (?int $state, Get $get, Set $set) => $set(
-                                            'price',
-                                            number_format(Service::where('name', $get('item'))->get()->first()->price * $state / 100, 2, ',', '.')
-                                        )),
+                                        ->afterStateUpdated(
+                                            fn(?int $state, Get $get, Set $set) => $set(
+                                                'price',
+                                                number_format(Service::where('name', $get('item'))->get()->first()->price * $state / 100, 2, ',', '.')
+                                            )
+                                        ),
                                     Money::make('price')
                                         ->label('Preço')
                                         ->required()
                                         ->readOnly()
                                         ->columnSpan(1)
-                                        ->formatStateUsing(fn (?int $state): string => number_format($state / 100, 2, ',', '.'))
-                                        ->dehydrateStateUsing(fn (string $state): string => str($state)->remove([',', '.'])),
+                                        ->formatStateUsing(fn(?int $state): string => number_format($state / 100, 2, ',', '.'))
+                                        ->dehydrateStateUsing(fn(string $state): string => str($state)->remove([',', '.'])),
 
                                     Components\Select::make('pet')
-                                        ->options(fn (Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'name'))
+                                        ->options(fn(Get $get) => Customer::find($get('../../customer_id'))->pets->pluck('name', 'name'))
                                         ->native(false)
                                         ->required()
                                         ->columnSpan(2),
                                     Components\Select::make('employee')
                                         ->label('Funcionário')
-                                        ->options(fn (Get $get) => Employee::whereHas('services', fn (Builder $query) => $query->where('name', $get('item')))->pluck('name', 'name'))
+                                        ->options(fn(Get $get) => Employee::whereHas('services', fn(Builder $query) => $query->where('name', $get('item')))->pluck('name', 'name'))
                                         ->native(false)
                                         ->live()
                                         ->required()
@@ -129,7 +133,7 @@ class OrderResource extends Resource
                                 ->columnSpanFull(),
 
                         ])->afterValidation(function (Get $get, Set $set) {
-                            $total_price = collect($get('items'))->map(fn (array $item) => str($item['price'])->remove([',', '.'])->toInteger())->values()->sum();
+                            $total_price = collect($get('items'))->map(fn(array $item) => str($item['price'])->remove([',', '.'])->toInteger())->values()->sum();
 
                             $formated_total_price = number_format($total_price / 100, 2, ',', '.');
 
@@ -151,8 +155,8 @@ class OrderResource extends Resource
                                 ->label('Total')
                                 ->required()
                                 ->readOnly()
-                                ->formatStateUsing(fn (?int $state): string => number_format($state / 100, 2, ',', '.'))
-                                ->dehydrateStateUsing(fn (string $state): int => str($state)->remove([',', '.'])->toInteger()),
+                                ->formatStateUsing(fn(?int $state): string => number_format($state / 100, 2, ',', '.'))
+                                ->dehydrateStateUsing(fn(string $state): int => str($state)->remove([',', '.'])->toInteger()),
                         ]),
                 ])->columnSpanFull(),
             ]);
@@ -164,7 +168,7 @@ class OrderResource extends Resource
             ->groups([
                 Group::make('date')
                     ->label('Data')
-                    ->getTitleFromRecordUsing(fn (?Order $record): ?string => date('d/m/Y', strtotime($record->date)))
+                    ->getTitleFromRecordUsing(fn(?Order $record): ?string => date('d/m/Y', strtotime($record->date)))
                     ->collapsible(),
             ])
             ->columns([
@@ -181,17 +185,19 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('total')
                     ->numeric()
                     ->sortable()
-                    ->formatStateUsing(fn (?int $state): string => "R$ " . number_format($state / 100, 2, ',', '.')),
+                    ->formatStateUsing(fn(?int $state): string => "R$ " . number_format($state / 100, 2, ',', '.')),
                 Tables\Columns\TextColumn::make('date')
                     ->label('Data')
                     ->date('d/m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('start_hour')
                     ->label('Chegada')
-                    ->sortable(),
+                    ->sortable()
+                    ->badge(),
                 Tables\Columns\TextColumn::make('end_hour')
                     ->label('Término')
-                    ->sortable(),
+                    ->sortable()
+                    ->badge(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y H:i:s')
@@ -210,6 +216,26 @@ class OrderResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(OrderStatusEnum::class),
+                Tables\Filters\Filter::make('date')
+                    ->form([
+                        Forms\Components\DatePicker::make('created_from')
+                            ->label('De'),
+                        Forms\Components\DatePicker::make('created_until')
+                            ->label('Até'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
