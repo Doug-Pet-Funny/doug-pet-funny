@@ -31,7 +31,7 @@ class OrderFactory extends Factory
                     'quantity' => 1
                 ],
             ],
-            'date' => fake()->date(),
+            'date' => fake()->dateTimeThisYear()->format('Y-m-d'),
             'start_hour' => fake()->time(),
             'end_hour' => fake()->time(),
         ];

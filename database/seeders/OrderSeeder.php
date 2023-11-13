@@ -17,7 +17,7 @@ class OrderSeeder extends Seeder
      */
     public function run(): void
     {
-        Order::factory(10)->create()->each(function (Order $order) {
+        Order::factory(20)->create()->each(function (Order $order) {
             $customer = Customer::inRandomOrder()->limit(1)->first();
             $order->customer()->associate($customer);
 
